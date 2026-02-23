@@ -1,12 +1,13 @@
 import sys
-
+import App.logic as logic
 
 def new_logic():
     """
         Se crea una instancia del controlador
     """
     #TODO: Llamar la función de la lógica donde se crean las estructuras de datos
-    pass
+    control = logic.new_logic()
+    return control
 
 def print_menu():
     print("Bienvenido")
@@ -24,7 +25,13 @@ def load_data(control):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    pass
+    filename = "computer_prices_small.csv"
+    load_time, total_computers, min_computer, max_computer = logic.load_data(control, filename)
+    print(f"Tiempo de carga: {load_time} ms")
+    print(f"Total de computadores: {total_computers}")
+
+    print(f"Computador más barato: {min_computer['brand']} {min_computer['model']} con precio de ${min_computer['price']}")
+    print(f"Computador más caro: {max_computer['brand']} {max_computer['model']} con precio de ${max_computer['price']}")
 
 
 def print_data(control, id):
@@ -112,7 +119,7 @@ def main():
         elif int(inputs) == 5:
             print_req_5(control)
 
-        elif int(inputs) == 5:
+        elif int(inputs) == 6:
             print_req_6(control)
 
         elif int(inputs) == 7:
