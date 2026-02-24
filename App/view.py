@@ -112,8 +112,49 @@ def print_req_6(control):
     """
         Función que imprime la solución del Requerimiento 6 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 6
-    pass
+    year_init_str = input('Ingrese el año inicial (ej. 2015):\n')
+    year_end_str = input('Ingrese el año final (ej. 2020):\n')
+    try:
+        year_init = int(year_init_str)
+        year_end = int(year_end_str)
+    except ValueError:
+        print('Años inválidos. Deben ser enteros.')
+        return
+
+    exec_time, total_matches, result = logic.req_6(control, year_init, year_end)
+
+    print(f"Tiempo de ejecución: {exec_time} ms")
+    print(f"Total de computadores en el rango {year_init}-{year_end}: {total_matches}")
+
+    most_used = result.get('most_used') if result else None
+    most_revenue = result.get('most_revenue') if result else None
+
+    if most_used and most_used.get('os'):
+        print(f"OS más usado: {most_used['os']} - registros: {most_used['count']} - recaudo: ${most_used['revenue']:.2f}")
+    else:
+        print('OS más usado: Ninguno')
+
+    if most_revenue and most_revenue.get('os'):
+        print(f"OS que más recauda: {most_revenue['os']} - registros: {most_revenue['count']} - recaudo: ${most_revenue['revenue']:.2f}")
+    else:
+        print('OS que más recauda: Ninguno')
+
+    per_os = result.get('per_os') if result else {}
+    if per_os:
+        print('\nDetalle por sistema operativo:')
+        for os_name, d in per_os.items():
+            print(f"\n- {os_name}:")
+            print(f"  Cantidad: {d.get('count')}")
+            print(f"  Precio promedio: ${d.get('avg_price'):.2f}")
+            print(f"  Peso promedio (kg): {d.get('avg_weight'):.2f}")
+            me = d.get('most_expensive')
+            mc = d.get('most_cheap')
+            if me:
+                print(f"  Computador más costoso: {me.get('brand')} {me.get('model')} - Año: {me.get('year')} - CPU: {me.get('cpu')} - GPU: {me.get('gpu')} - Precio: ${me.get('price')}")
+            if mc:
+                print(f"  Computador más barato: {mc.get('brand')} {mc.get('model')} - Año: {mc.get('year')} - CPU: {mc.get('cpu')} - GPU: {mc.get('gpu')} - Precio: ${mc.get('price')}")
+    else:
+        print('No hay sistemas operativos en el rango de años especificado.')
 
 # Se crea la lógica asociado a la vista
 control = new_logic()

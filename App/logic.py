@@ -223,7 +223,142 @@ def req_6(catalog):
     Retorna el resultado del requerimiento 6
     """
     # TODO: Modificar el requerimiento 6
-    pass
+    # Nota: Esta firma se dejará como compatibilidad; la vista debe llamar con años.
+    return None
+
+
+def req_6(catalog, year_init, year_end):
+    """
+    Requerimiento 6: Identificar OS más usado y OS que más recauda en un rango de años.
+    Usa la estructura `single_linked_list` para procesar los datos (se copia desde el array_list).
+    Parámetros:
+    - year_init: int (año inicial inclusive)
+    - year_end: int (año final inclusive)
+
+    Retorna:
+    (exec_time_ms, total_matches, result_dict)
+
+    result_dict contiene:
+    - most_used: {'os', 'count', 'revenue'}
+    - most_revenue: {'os', 'count', 'revenue'}
+    - per_os: { os_name: { 'avg_price', 'avg_weight', 'most_expensive', 'most_cheap', 'count', 'total_revenue' } }
+    """
+    start_time = get_time()
+
+    # Crear una lista enlazada y copiar datos desde el array_list
+    computers_ll = ll.new_list()
+    total_array = al.size(catalog["computers"])
+    for i in range(1, total_array + 1):
+        comp = al.get_element(catalog["computers"], i)
+        ll.add_last(computers_ll, comp)
+
+    total_matches = 0
+    os_stats = {}
+
+    size_ll = ll.size(computers_ll)
+    for pos in range(0, size_ll):
+        try:
+            comp = ll.get_element(computers_ll, pos)
+        except Exception:
+            continue
+        year = comp.get('release_year')
+        if year is None:
+            continue
+        try:
+            if int(year) < int(year_init) or int(year) > int(year_end):
+                continue
+        except Exception:
+            continue
+
+        total_matches += 1
+        os_name = comp.get('os') or 'Unknown'
+        price = float(comp.get('price') or 0.0)
+        weight = float(comp.get('weight_kg') or 0.0)
+
+        if os_name not in os_stats:
+            os_stats[os_name] = {
+                'count': 0,
+                'total_revenue': 0.0,
+                'sum_price': 0.0,
+                'sum_weight': 0.0,
+                'max_comp': comp,
+                'min_comp': comp
+            }
+
+        s = os_stats[os_name]
+        s['count'] += 1
+        s['total_revenue'] += price
+        s['sum_price'] += price
+        s['sum_weight'] += weight
+
+        # actualizar max y min por precio
+        try:
+            if price > float(s['max_comp'].get('price') or 0.0):
+                s['max_comp'] = comp
+        except Exception:
+            s['max_comp'] = comp
+        try:
+            if price < float(s['min_comp'].get('price') or float('inf')):
+                s['min_comp'] = comp
+        except Exception:
+            s['min_comp'] = comp
+
+    # Determinar OS más usado y OS que más recauda
+    if os_stats:
+        most_used_name, most_used_stats = max(os_stats.items(), key=lambda x: x[1]['count'])
+        most_revenue_name, most_revenue_stats = max(os_stats.items(), key=lambda x: x[1]['total_revenue'])
+    else:
+        most_used_name = None
+        most_used_stats = None
+        most_revenue_name = None
+        most_revenue_stats = None
+
+    # Preparar detalle por OS
+    per_os = {}
+    for os_name, s in os_stats.items():
+        cnt = s['count']
+        avg_price = s['sum_price'] / cnt if cnt > 0 else 0.0
+        avg_weight = s['sum_weight'] / cnt if cnt > 0 else 0.0
+
+        def summarize_comp(c):
+            if not c:
+                return {'model': None, 'brand': None, 'year': None, 'cpu': None, 'gpu': None, 'price': None}
+            return {
+                'model': c.get('model'),
+                'brand': c.get('brand'),
+                'year': c.get('release_year'),
+                'cpu': c.get('cpu_model'),
+                'gpu': c.get('gpu_model'),
+                'price': c.get('price')
+            }
+
+        per_os[os_name] = {
+            'avg_price': avg_price,
+            'avg_weight': avg_weight,
+            'most_expensive': summarize_comp(s.get('max_comp')),
+            'most_cheap': summarize_comp(s.get('min_comp')),
+            'count': s['count'],
+            'total_revenue': s['total_revenue']
+        }
+
+    result = {
+        'most_used': {
+            'os': most_used_name,
+            'count': most_used_stats['count'] if most_used_stats else 0,
+            'revenue': most_used_stats['total_revenue'] if most_used_stats else 0.0
+        },
+        'most_revenue': {
+            'os': most_revenue_name,
+            'count': most_revenue_stats['count'] if most_revenue_stats else 0,
+            'revenue': most_revenue_stats['total_revenue'] if most_revenue_stats else 0.0
+        },
+        'per_os': per_os
+    }
+
+    end_time = get_time()
+    exec_time = delta_time(start_time, end_time)
+
+    return exec_time, total_matches, result
 
 
 # Funciones para medir tiempos de ejecucion
