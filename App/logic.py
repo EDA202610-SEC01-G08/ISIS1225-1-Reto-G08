@@ -101,10 +101,17 @@ def load_data(catalog, filename):
 
 # Funciones de consulta sobre el catálogo
 
-
-def req_1(catalog, price_min, price_max):
+def req_1(catalog):
     """
     Retorna el resultado del requerimiento 1
+    """
+    # TODO: Modificar el requerimiento 1
+    pass
+
+
+def req_2(catalog, price_min, price_max):
+    """
+    Retorna el resultado del requerimiento 2
     """
 
     start_time = get_time()
@@ -175,14 +182,6 @@ def req_1(catalog, price_min, price_max):
     tiempo_ejecucion = delta_time(start_time, end_time)
 
     return count, avg_ram, avg_vram, avg_price, min_comp, max_comp, mas_moderno, tiempo_ejecucion  
-
-
-def req_2(catalog):
-    """
-    Retorna el resultado del requerimiento 2
-    """
-    # TODO: Modificar el requerimiento 2
-    pass
 
 
 def req_3(catalog):
