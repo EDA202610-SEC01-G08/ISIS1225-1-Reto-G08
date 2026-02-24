@@ -68,8 +68,28 @@ def print_req_3(control):
     """
         Función que imprime la solución del Requerimiento 3 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 3
-    pass
+    cpu_brand = input('Ingrese la marca del CPU (ej. Intel, AMD):\n')
+    cpu_tier_str = input('Ingrese el CPU tier (numero entero):\n')
+    try:
+        cpu_tier = int(cpu_tier_str)
+    except ValueError:
+        print('CPU tier inválido. Debe ser un entero.')
+        return
+
+    exec_time, total_matches, details = logic.req_3(control, cpu_brand, cpu_tier)
+
+    print(f"Tiempo de ejecución: {exec_time} ms")
+    print(f"Total de computadores que cumplieron el filtro: {total_matches}")
+    if details['count'] > 0:
+        print(f"Cantidad: {details['count']}")
+        print(f"Promedio precio: ${details['avg_price']:.2f}")
+        print(f"Promedio RAM (GB): {details['avg_ram']:.2f}")
+        print(f"Promedio VRAM (GB): {details['avg_vram']:.2f}")
+        print(f"Promedio hilos CPU: {details['avg_threads']:.2f}")
+        print(f"GPU más frecuente: {details['most_freq_gpu']}")
+        print(f"Año de lanzamiento más frecuente: {details['most_freq_year']}")
+    else:
+        print('No se encontraron computadores que cumplan el filtro.')
 
 
 def print_req_4(control):

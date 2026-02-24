@@ -118,13 +118,90 @@ def req_2(catalog):
     pass
 
 
-def req_3(catalog):
+def req_3(catalog, cpu_brand, cpu_tier):
     """
-    Retorna el resultado del requerimiento 3
+    Retorna el resultado del requerimiento 3:
+    Promedios por `cpu_brand` y `cpu_tier`.
+    Parámetros:
+    - cpu_brand: str
+    - cpu_tier: int
+    Retorna:
+    (exec_time_ms, total_matches, details_dict)
+    donde details_dict contiene: count, avg_price, avg_ram, avg_vram,
+    avg_threads, most_freq_gpu, most_freq_year
     """
-    # TODO: Modificar el requerimiento 3
-    pass
+    start_time = get_time()
 
+    total = al.size(catalog["computers"])
+    matches = 0
+    sum_price = 0.0
+    sum_ram = 0
+    sum_vram = 0
+    sum_threads = 0
+
+    gpu_counts = {}
+    year_counts = {}
+
+    # Iterar sobre la lista (1-based indices)
+    for i in range(1, total + 1):
+        comp = al.get_element(catalog["computers"], i)
+        # Comparar marca de CPU (case-insensitive) y tier (int)
+        if comp.get('cpu_brand') and comp.get('cpu_tier') is not None:
+            try:
+                if comp['cpu_brand'].strip().lower() == cpu_brand.strip().lower() and int(comp['cpu_tier']) == int(cpu_tier):
+                    matches += 1
+                    price = comp.get('price', 0.0) or 0.0
+                    ram = comp.get('ram_gb', 0) or 0
+                    vram = comp.get('vram_gb', 0) or 0
+                    threads = comp.get('cpu_threads', 0) or 0
+
+                    sum_price += float(price)
+                    sum_ram += int(ram)
+                    sum_vram += int(vram)
+                    sum_threads += int(threads)
+
+                    gpu = comp.get('gpu_brand') or None
+                    year = comp.get('release_year') or None
+                    if gpu:
+                        gpu_counts[gpu] = gpu_counts.get(gpu, 0) + 1
+                    if year:
+                        year_counts[year] = year_counts.get(year, 0) + 1
+            except Exception:
+                # Ignorar filas con datos inconsistentes
+                continue
+
+    # Calcular promedios
+    if matches > 0:
+        avg_price = sum_price / matches
+        avg_ram = sum_ram / matches
+        avg_vram = sum_vram / matches
+        avg_threads = sum_threads / matches
+        # GPU más frecuente
+        most_freq_gpu = max(gpu_counts.items(), key=lambda x: x[1])[0] if gpu_counts else None
+        most_freq_year = max(year_counts.items(), key=lambda x: x[1])[0] if year_counts else None
+    else:
+        avg_price = 0.0
+        avg_ram = 0.0
+        avg_vram = 0.0
+        avg_threads = 0.0
+        most_freq_gpu = None
+        most_freq_year = None
+
+    end_time = get_time()
+    exec_time = delta_time(start_time, end_time)
+
+    details = {
+        'count': matches,
+        'avg_price': avg_price,
+        'avg_ram': avg_ram,
+        'avg_vram': avg_vram,
+        'avg_threads': avg_threads,
+        'most_freq_gpu': most_freq_gpu,
+        'most_freq_year': most_freq_year
+    }
+
+    return exec_time, matches, details
+    
 
 def req_4(catalog):
     """
