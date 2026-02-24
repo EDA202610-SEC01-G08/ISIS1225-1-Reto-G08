@@ -83,8 +83,21 @@ def load_data(catalog, filename):
     end_time = get_time()
     load_time = delta_time(start_time, end_time)
     total_computers = al.size(catalog["computers"])
+    first_five = []
+    last_five = []
 
-    return load_time, total_computers, min_computer, max_computer
+    size = al.size(catalog["computers"])
+
+# Primeros 5
+    for i in range(1, min(6, size + 1)):
+        first_five.append(al.get_element(catalog["computers"], i))
+
+# Últimos 5
+    for i in range(max(1, size - 4), size + 1):
+        last_five.append(al.get_element(catalog["computers"], i))
+
+    return load_time, total_computers, min_computer, max_computer, first_five, last_five
+
 
 # Funciones de consulta sobre el catálogo
 

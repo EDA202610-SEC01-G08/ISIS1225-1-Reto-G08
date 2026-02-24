@@ -26,9 +26,16 @@ def load_data(control):
     """
     #TODO: Realizar la carga de datos
     filename = "computer_prices_small.csv"
-    load_time, total_computers, min_computer, max_computer = logic.load_data(control, filename)
+    load_time, total_computers, min_computer, max_computer, first_five, last_five = logic.load_data(control, filename)
     print(f"Tiempo de carga: {load_time} ms")
     print(f"Total de computadores: {total_computers}")
+    print(f"Primeros 5 computadores cargados:") 
+    for computer in first_five:
+        print(f"{computer['brand']} {computer['model']} {computer['release_year']} {computer['cpu_model']} {computer['gpu_model']}- ${computer['price']}")
+    
+    print(f"Últimos 5 computadores cargados:")
+    for computer in last_five:
+        print(f"{computer['brand']} {computer['model']} {computer['release_year']} {computer['cpu_model']} {computer['gpu_model']}- ${computer['price']}")
 
     print(f"Computador más barato: {min_computer['brand']} {min_computer['model']} con precio de ${min_computer['price']}")
     print(f"Computador más caro: {max_computer['brand']} {max_computer['model']} con precio de ${max_computer['price']}")
