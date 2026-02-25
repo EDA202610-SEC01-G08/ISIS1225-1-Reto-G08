@@ -106,7 +106,7 @@ def req_1(catalog, brand):
     Retorna el resultado del requerimiento 1
     """
     # TODO: Modificar el requerimiento 1
-    
+    brand = brand.strip().lower()
     start_time = get_time()
     
     computers = catalog["computers"]
@@ -149,7 +149,8 @@ def req_1(catalog, brand):
         comp = al.get_element(computers, i)
 
         # filtro por marca
-        if comp.get("brand") != brand:
+        comp_brand = comp.get("brand", "").strip().lower()
+        if comp_brand != brand:
             continue
 
         total_comp += 1
@@ -470,10 +471,12 @@ def req_4(catalog,cpu_brand, gpu_model):
     
     for i in range(1,n+1):
         comp=al.get_element(computers,i)
-        if comp.get("cpu_brand")!= cpu_brand:
-            
-            continue 
-        if comp.get("gpu_model")!= gpu_model:
+        # Ensure cpu_brand and gpu_model comparisons are case-insensitive and handle whitespace
+        comp_cpu_brand = comp.get("cpu_brand", "").strip().lower()
+        comp_gpu_model = comp.get("gpu_model", "").strip().lower()
+        if comp_cpu_brand != cpu_brand.strip().lower():
+            continue
+        if comp_gpu_model != gpu_model.strip().lower():
             continue
         al.add_last(filtered,comp)
         total_m+=1
