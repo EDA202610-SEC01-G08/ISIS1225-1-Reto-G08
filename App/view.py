@@ -25,7 +25,7 @@ def load_data(control):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    filename = "computer_prices_small.csv"
+    filename = "computer_prices_medium.csv"
     load_time, total_computers, min_computer, max_computer, first_five, last_five = logic.load_data(control, filename)
     print(f"Tiempo de carga: {load_time} ms")
     print(f"Total de computadores: {total_computers}")
@@ -61,7 +61,55 @@ def print_req_2(control):
         Función que imprime la solución del Requerimiento 2 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 2
-    pass
+    try:
+        price_min = float(input("Ingrese el precio mínimo: "))
+        price_max = float(input("Ingrese el precio máximo: "))
+    except ValueError:
+        print("Entrada inválida. Debe ingresar números.")
+        return
+
+    count, avg_ram, avg_vram, avg_price, min_comp, max_comp, mas_moderno, tiempo_ejecucion = logic.req_2(control, price_min, price_max)
+
+    print("--- Resultado Requerimiento 2 ---")
+    print(f"Tiempo de ejecución (ms): {tiempo_ejecucion}")
+    print(f"Total computadores en rango: {count}")
+    print(f"Promedio RAM (GB): {avg_ram}")
+    print(f"Promedio VRAM (GB): {avg_vram}")
+    print(f"Promedio precio: {avg_price}")
+
+    if count == 0 or min_comp is None:
+        print("\nNo se encontraron computadores en ese rango.")
+        return
+
+    print("\nComputador más barato en el rango:")
+    print(
+        min_comp["device_type"],
+        min_comp["brand"],
+        min_comp["model"],
+        min_comp["release_year"],
+        min_comp["os"],
+        min_comp["price"]
+    )
+
+    print("\nComputador más caro en el rango:")
+    print(
+        max_comp["device_type"],
+        max_comp["brand"],
+        max_comp["model"],
+        max_comp["release_year"],
+        max_comp["os"],
+        max_comp["price"]
+    )
+
+    print("\nComputador más moderno en el rango (desempate por precio):")
+    print(
+        mas_moderno["device_type"],
+        mas_moderno["brand"],
+        mas_moderno["model"],
+        mas_moderno["release_year"],
+        mas_moderno["os"],
+        mas_moderno["price"]
+    )
 
 
 def print_req_3(control):
@@ -105,7 +153,35 @@ def print_req_5(control):
         Función que imprime la solución del Requerimiento 5 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 5
-    pass
+
+    filtro = input("Ingrese filtro (BARATO o CARO): ").strip().upper()
+    resolucion = input("Ingrese resolución (ej. 1920x1080): ").strip()
+    year_min = int(input("Ingrese año mínimo: "))
+    year_max = int(input("Ingrese año máximo: "))
+
+    (filtro, count, avg_price, avg_display, avg_gpu_tier, mejor, tiempo_ejecucucion) = logic.req_5(control, filtro, resolucion, year_min, year_max)
+
+    print("\n========== RESULTADOS REQ 5 ==========")
+    print(f"Filtro aplicado: {filtro}")
+    print(f"Tiempo de ejecución (ms): {tiempo_ejecucucion}")
+    print(f"Total computadores que cumplen filtro: {count}")
+
+    if count == 0:
+        print("No se encontraron computadores con esos criterios.")
+        return
+
+    print("\n--- Computador seleccionado ---")
+    print(f"Precio: {mejor['price']}")
+    print(f"Tamaño pantalla: {mejor['display_size_in']}")
+    print(f"GPU Tier: {mejor['gpu_tier']}")
+    print(f"Tipo de display: {mejor['display_type']}")
+    print(f"Año: {mejor['release_year']}")
+    print(f"Peso (kg): {mejor['weight_kg']}")
+
+    print("\n--- Promedios de los que cumplen el filtro ---")
+    print(f"Precio promedio: {avg_price}")
+    print(f"Tamaño promedio pantalla: {avg_display}")
+    print(f"GPU Tier promedio: {avg_gpu_tier}")
 
 
 def print_req_6(control):
