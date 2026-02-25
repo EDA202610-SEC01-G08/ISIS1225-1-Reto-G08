@@ -101,12 +101,177 @@ def load_data(catalog, filename):
 
 # Funciones de consulta sobre el catálogo
 
-def req_1(catalog):
+def req_1(catalog, brand):
     """
     Retorna el resultado del requerimiento 1
     """
     # TODO: Modificar el requerimiento 1
-    pass
+    
+    start_time = get_time()
+    
+    computers = catalog["computers"]
+    size = al.size(computers)
+    
+
+    total_comp = 0
+
+    # Precio
+    sum_price = 0.0
+    min_price = None
+    max_price = None
+
+    # Para promedios correctos si hay None (conteos por atributo)
+    sum_ram = 0
+    cnt_ram = 0
+    min_ram = None
+    max_ram = None
+
+    sum_vram = 0
+    cnt_vram = 0
+    min_vram = None
+    max_vram = None
+
+    sum_cores = 0
+    cnt_cores = 0
+    min_cores = None
+    max_cores = None
+
+    sum_year = 0
+    cnt_year = 0
+    min_year = None
+    max_year = None
+
+    # Computadores min/max por precio (con desempate por menor peso)
+    min_price_comp = None
+    max_price_comp = None
+
+    for i in range(1, size + 1):
+        comp = al.get_element(computers, i)
+
+        # filtro por marca
+        if comp.get("brand") != brand:
+            continue
+
+        total_comp += 1
+
+        price = comp["price"]
+        sum_price += price
+
+        if min_price is None or price < min_price:
+            min_price = price
+        if max_price is None or price > max_price:
+            max_price = price
+
+        # max_price_comp (precio más alto, empate = menor peso) 
+        if max_price_comp is None:
+            max_price_comp = comp
+        else:
+            pmax = max_price_comp["price"]
+            if price > pmax:
+                max_price_comp = comp
+            elif price == pmax:
+                wa = comp.get("weight_kg")
+                wb = max_price_comp.get("weight_kg")
+                if wa is not None and wb is not None:
+                    if wa < wb:
+                        max_price_comp = comp
+                elif wa is not None and wb is None:
+                    max_price_comp = comp
+
+        # min_price_comp (precio más bajo, empate = menor peso) 
+        if min_price_comp is None:
+            min_price_comp = comp
+        else:
+            pmin = min_price_comp["price"]
+            if price < pmin:
+                min_price_comp = comp
+            elif price == pmin:
+                wa = comp.get("weight_kg")
+                wb = min_price_comp.get("weight_kg")
+                
+                if wa is not None and wb is not None:
+                    if wa < wb:
+                        min_price_comp = comp
+                elif wa is not None and wb is None:
+                    min_price_comp = comp
+
+        # RAM
+        ram = comp.get("ram_gb")
+        if ram is not None:
+            sum_ram += ram
+            cnt_ram += 1
+            if min_ram is None or ram < min_ram:
+                min_ram = ram
+            if max_ram is None or ram > max_ram:
+                max_ram = ram
+
+        # VRAM
+        vram = comp.get("vram_gb")
+        if vram is not None:
+            sum_vram += vram
+            cnt_vram += 1
+            if min_vram is None or vram < min_vram:
+                min_vram = vram
+            if max_vram is None or vram > max_vram:
+                max_vram = vram
+
+        # CPU cores
+        cores = comp.get("cpu_cores")
+        if cores is not None:
+            sum_cores += cores
+            cnt_cores += 1
+            if min_cores is None or cores < min_cores:
+                min_cores = cores
+            if max_cores is None or cores > max_cores:
+                max_cores = cores
+
+        # Release year
+        year = comp.get("release_year")
+        if year is not None:
+            sum_year += year
+            cnt_year += 1
+            if min_year is None or year < min_year:
+                min_year = year
+            if max_year is None or year > max_year:
+                max_year = year
+
+    end_time = get_time()
+    exec_time = delta_time(start_time, end_time)
+
+    if total_comp == 0:
+        return (exec_time, 0,
+                None, None, None,
+                None, None, None,
+                None, None, None,
+                None, None, None,
+                None, None, None,
+                None, None)
+
+    avg_price = sum_price / total_comp
+
+    # Promedios correctos: dividir por los que sí tienen el atributo
+    avg_ram = (sum_ram / cnt_ram) if cnt_ram else None
+    avg_vram = (sum_vram / cnt_vram) if cnt_vram else None
+    avg_cores = (sum_cores / cnt_cores) if cnt_cores else None
+    avg_year = (sum_year / cnt_year) if cnt_year else None
+
+    return (exec_time, total_comp,
+            avg_price, min_price, max_price,
+            avg_ram, min_ram, max_ram,
+            avg_vram, min_vram, max_vram,
+            avg_cores, min_cores, max_cores,
+            avg_year, min_year, max_year,
+            max_price_comp, min_price_comp)
+    
+    
+
+    
+        
+    
+           
+            
+    
+   
 
 
 def req_2(catalog, price_min, price_max):
@@ -269,12 +434,84 @@ def req_3(catalog, cpu_brand, cpu_tier):
     return exec_time, matches, details
     
 
-def req_4(catalog):
+def req_4(catalog,cpu_brand, gpu_model):
     """
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
-    pass
+    start_time= get_time()
+    computers= catalog["computers"]
+    n=al.size(computers)
+    
+    filtered= al.new_list()
+    total_m=0
+    sum_price=0.0
+    sum_vram=0
+    cnt_vram=0  
+    sum_ram=0
+    cnt_ram=0
+    sum_boost=0.0
+    cnt_boost=0
+    
+    top1= None 
+    top2= None
+    
+    def weight_key(comp):
+        w=comp.get("weight_kg")
+        return w if w is not None else float("inf")
+    def better(a,b):
+        if b is None:
+            return True
+        pa= a['price']
+        pb= b['price']
+        if pa!= pb:
+            return pa>pb
+        return weight_key(a)< weight_key(b)
+    
+    for i in range(1,n+1):
+        comp=al.get_element(computers,i)
+        if comp.get("cpu_brand")!= cpu_brand:
+            
+            continue 
+        if comp.get("gpu_model")!= gpu_model:
+            continue
+        al.add_last(filtered,comp)
+        total_m+=1
+        sum_price+=comp['price']
+        vram=comp.get("vram_gb")
+        if vram is not None:
+            sum_vram+=vram
+            cnt_vram+=1
+        
+        ram=comp.get("ram_gb")
+        if ram is not None:
+            sum_ram+=ram
+            cnt_ram+=1
+        
+        boost=comp.get("cpu_boost_ghz")
+        if boost is not None:
+            sum_boost+=boost
+            cnt_boost+=1
+            
+        if better(comp,top1):
+            top2=top1
+            top1=comp
+        elif comp is not top1 and better(comp,top2):
+            top2=comp
+        
+    end_time= get_time()
+    exec_time= delta_time(start_time,end_time)
+    
+    if total_m==0:
+        return (exec_time, 0, None, None, None, None, None, None, filtered)
+    avg_price= sum_price/ total_m
+    avg_vram= (sum_vram/ cnt_vram)if cnt_vram else None
+    avg_ram=(sum_ram/ cnt_ram) if cnt_ram else None
+    avg_boost=(sum_boost/ cnt_boost) if cnt_boost else None
+    
+    return (exec_time, total_m, avg_price, avg_vram, avg_ram, avg_boost, top1, top2, filtered)
+    
+            
 
 
 def req_5(catalog, filtro, resolucion, year_min, year_max):

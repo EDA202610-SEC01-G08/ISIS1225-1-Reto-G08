@@ -53,7 +53,63 @@ def print_req_1(control):
         Función que imprime la solución del Requerimiento 1 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 1
-    pass
+    brand = input("Ingrese la marca del computador").strip()
+    
+    (exec_time,total_comp,
+     avg_price,min_price,max_price,
+     avg_ram,min_ram,max_ram,
+     avg_vram,min_vram,max_vram,
+     avg_cores,min_cores,max_cores,
+     avg_year,min_year,max_year,
+     max_price_comp,min_price_comp)=logic.req_1(control, brand)
+    
+    print("\n=== Requerimiento 1:Estadisticas por marca ===")
+    print(f"Marca consultada: {brand}")
+    print(f"Tiempo de ejecución: {exec_time} ms")
+    print(f"Total de computadores de la marca: {total_comp}\n")
+    
+    if total_comp ==0:
+        print("No se encontraron computadores de dicha marca.")
+        return
+    print("precio")
+    print(f"Promedio: {avg_price}")
+    print(f"minimo: {min_price}")
+    print(f"maximo: {max_price}")
+    
+    print("Ram")
+    print(f"Promedio: {avg_ram}")
+    print(f"minimo: {min_ram}")
+    print(f"maximo: {max_ram}")
+    
+    print("Vram")
+    print(f"Promedio: {avg_vram}")
+    print(f"minimo: {min_vram}")
+    print(f"maximo: {max_vram}")
+    
+    print("Cores")
+    print(f"Promedio: {avg_cores}")
+    print(f"minimo: {min_cores}")
+    print(f"maximo: {max_cores}")
+    
+    print("año de lanzamiento")
+    print(f"Promedio: {avg_year}")
+    print(f"minimo: {min_year}")
+    print(f"maximo: {max_year}")
+    
+    if max_price_comp is not None:
+        print("Computador más caro ")
+        print(f"Modelo: {max_price_comp.get('model')}")
+        print(f"Precio: {max_price_comp.get('price')}")
+        print(f"Peso: {max_price_comp.get('weight_kg')}")
+    
+    if min_price_comp is not None:
+        print("computador más barato ")
+        print(f"Modelo: {min_price_comp.get('model')}")
+        print(f"Precio: {min_price_comp.get('price')}")
+        print(f"Peso: {min_price_comp.get('weight_kg')}")
+        
+    
+  
 
 
 def print_req_2(control):
@@ -145,7 +201,44 @@ def print_req_4(control):
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
-    pass
+    cpu_brand = input("Ingrese la marca del CPU").strip()
+    gpu_model = input("Ingrese el modelo del GPU").strip()
+    
+    (exec_time,total_m,avg_price,avg_vram,avg_ram,avg_boost,top1,top2,filtered) = logic.req_4(control, cpu_brand, gpu_model)
+    print("\n=== Requerimiento 4:CPU brand y GPU Model ===")
+    print(f"CPU brand consultada: {cpu_brand}")
+    print(f"GPU model consultada: {gpu_model}")
+    print(f"Tiempo de ejecución: {exec_time} ms")
+    print(f"Total de computadores que cumplen el filtro: {total_m}")
+    
+    if total_m==0:
+        print("No se encontraron computadores que cumplan el filtro.")
+        return
+    print(f"Precio promedio: {avg_price}")
+    print(f"VRAM promedio: {avg_vram}")
+    print(f"RAM promedio: {avg_ram}")
+    print(f"CPU boost promedio: {avg_boost}")
+    
+    
+    print("Top 2 mas costosos(desempate:menor peso)")
+    if top1 is not None:
+        print("computador mas costoso")
+        print(f"Modelo: {top1.get('model')}")
+        print(f"Marca: {top1.get('brand')}")
+        print(f"Año: {top1.get('release_year')}")
+        print(f"CPU: {top1.get('cpu_model')}")
+        print(f"Precio: {top1.get('price')}")
+        print(f"Peso: {top1.get('weight_kg')}")
+        
+    if top2 is not None:
+        print("computador segundo mas costoso")
+        print(f"Modelo: {top2.get('model')}")
+        print(f"Marca: {top2.get('brand')}")
+        print(f"Año: {top2.get('release_year')}")
+        print(f"CPU: {top2.get('cpu_model')}")
+        print(f"Precio: {top2.get('price')}")
+        print(f"Peso: {top2.get('weight_kg')}")
+  
 
 
 def print_req_5(control):
