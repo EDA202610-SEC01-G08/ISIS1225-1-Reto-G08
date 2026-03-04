@@ -132,6 +132,9 @@ def req_1(catalog, brand):
     - max_year: int o None si no hay datos (año de lanzamiento máximo de las computadoras filtradas)
     - max_price_comp: computadora con el precio más alto entre las filtradas (desempate por menor peso)
     - min_price_comp: computadora con el precio más bajo entre las filtradas (desempate por menor peso)
+    Complejidad:
+    - Tiempo: O(n), donde n es el número de computadoras en la lista, ya que se recorre toda la lista una vez.
+    - Memoria: O(1), ya que no se utilizan estructuras adicionales proporcionales al tamaño de la entrada.
     """
     brand = brand.strip().lower()
     start_time = get_time()
@@ -318,8 +321,10 @@ def req_2(catalog, price_min, price_max):
     - min_price_comp: computadora con el precio más bajo entre las filtradas (desempate por menor peso)
     - max_price_comp: computadora con el precio más alto entre las filtradas (desempate por menor peso)
     - mas_moderno_comp: computadora más moderna entre las filtradas (desempate por precio más alto)
+    Complejidad:
+    - Tiempo: O(n), donde n es el número de computadoras en la lista, ya que se recorre toda la lista una vez.
+    - Memoria: O(1), ya que no se utilizan estructuras adicionales proporcionales al tamaño de la entrada.
     """
-
     start_time = get_time()
 
     count = 0
@@ -401,6 +406,9 @@ def req_3(catalog, cpu_brand, cpu_tier):
     (exec_time_ms, total_matches, details_dict)
     donde details_dict contiene: count, avg_price, avg_ram, avg_vram,
     avg_threads, most_freq_gpu, most_freq_year
+    Complejidad:
+    - Tiempo: O(n), donde n es el número de computadoras en la lista, ya que se recorre toda la lista una vez.
+    - Memoria: O(k), donde k es el número de marcas de GPU y años únicos, debido a los diccionarios auxiliares utilizados.
     """
     start_time = get_time()
 
@@ -492,8 +500,10 @@ def req_4(catalog,cpu_brand, gpu_model):
     - top1: computadora con mayor precio (desempate por menor peso)
     - top2: computadora con segundo mayor precio (desempate por menor peso)
     - filtered_list: lista de computadoras que cumplen el filtro (puede ser vacía)
+    Complejidad:
+    - Tiempo: O(n), donde n es el número de computadoras en la lista, ya que se recorre toda la lista una vez.
+    - Memoria: O(m), donde m es el número de computadoras que cumplen el filtro, debido a la lista de filtrados y las variables para estadísticas.
     """
-
     start_time= get_time()
     computers= catalog["computers"]
     n=al.size(computers)
@@ -590,6 +600,9 @@ def req_5(catalog, filtro, resolucion, year_min, year_max):
         - Si `filtro` es "BARATO": la computadora con el precio más bajo (desempate por menor peso)
         - Si `filtro` es "CARO": la computadora con el precio más alto (desempate por menor peso)
     - exec_time_ms: float (tiempo de ejecución en milisegundos)
+    Complejidad:
+    - Tiempo: O(n), donde n es el número de computadoras en la lista, ya que se recorre toda la lista una vez.
+    - Memoria: O(m), donde m es el número de computadoras que cumplen el filtro, debido a la lista de filtrados y las variables para estadísticas.
     """
     # TODO: Modificar el requerimiento 5
     start_time = get_time()
@@ -676,6 +689,9 @@ def req_6(catalog, year_init, year_end):
     - most_used: {'os', 'count', 'revenue'}
     - most_revenue: {'os', 'count', 'revenue'}
     - per_os: { os_name: { 'avg_price', 'avg_weight', 'most_expensive', 'most_cheap', 'count', 'total_revenue' } }
+    Complejidad:
+    - Tiempo: O(n), donde n es el número de computadoras en la lista, ya que se recorre toda la lista una vez.
+    - Memoria: O(m), donde m es el número de computadoras que cumplen el filtro, debido a la lista de filtrados y
     """
     start_time = get_time()
 
