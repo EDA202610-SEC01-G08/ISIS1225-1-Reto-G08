@@ -104,8 +104,35 @@ def load_data(catalog, filename):
 def req_1(catalog, brand):
     """
     Retorna el resultado del requerimiento 1
+    Requerimiento 1: Filtrar por marca y obtener estadísticas.
+    Parámetros:
+    - brand: str (comparación case-insensitive)
+    Retorna:
+    (exec_time_ms, total_matches, avg_price, min_price, max_price,
+     avg_ram, min_ram, max_ram,
+     avg_vram, min_vram, max_vram,
+     avg_cores, min_cores, max_cores,
+     avg_year, min_year, max_year,
+     max_price_comp, min_price_comp)
+    - total_matches: int (cantidad de computadoras que cumplen el filtro)
+    - avg_price: float (precio promedio de las computadoras filtradas)
+    - min_price: float (precio mínimo de las computadoras filtradas)
+    - max_price: float (precio máximo de las computadoras filtradas)
+    - avg_ram: float o None si no hay datos (RAM promedio de las computadoras filtradas)
+    - min_ram: int o None si no hay datos (RAM mínima de las computadoras filtradas)
+    - max_ram: int o None si no hay datos (RAM máxima de las computadoras filtradas)
+    - avg_vram: float o None si no hay datos (VRAM promedio de las computadoras filtradas)
+    - min_vram: int o None si no hay datos (VRAM mínima de las computadoras filtradas)
+    - max_vram: int o None si no hay datos (VRAM máxima de las computadoras filtradas)
+    - avg_cores: float o None si no hay datos (CPU cores promedio de las computadoras filtradas)
+    - min_cores: int o None si no hay datos (CPU cores mínima de las computadoras filtradas)
+    - max_cores: int o None si no hay datos (CPU cores máxima de las computadoras filtradas)
+    - avg_year: float o None si no hay datos (año de lanzamiento promedio de las computadoras filtradas)
+    - min_year: int o None si no hay datos (año de lanzamiento mínimo de las computadoras filtradas)
+    - max_year: int o None si no hay datos (año de lanzamiento máximo de las computadoras filtradas)
+    - max_price_comp: computadora con el precio más alto entre las filtradas (desempate por menor peso)
+    - min_price_comp: computadora con el precio más bajo entre las filtradas (desempate por menor peso)
     """
-    # TODO: Modificar el requerimiento 1
     brand = brand.strip().lower()
     start_time = get_time()
     
@@ -278,6 +305,19 @@ def req_1(catalog, brand):
 def req_2(catalog, price_min, price_max):
     """
     Retorna el resultado del requerimiento 2
+    Requerimiento 2: Filtrar por rango de precio y obtener estadísticas.
+    Parámetros:
+    - price_min: float (precio mínimo inclusive)
+    - price_max: float (precio máximo inclusive)
+    Retorna:
+    (total_matches, avg_ram, avg_vram, avg_price, min_price_comp, max_price_comp, mas_moderno_comp, exec_time_ms)
+    - total_matches: int (cantidad de computadoras que cumplen el filtro)
+    - avg_ram: float o None si no hay datos (RAM promedio de las computadoras filtradas)
+    - avg_vram: float o None si no hay datos (VRAM promedio de las computadoras filtradas)
+    - avg_price: float (precio promedio de las computadoras filtradas)
+    - min_price_comp: computadora con el precio más bajo entre las filtradas (desempate por menor peso)
+    - max_price_comp: computadora con el precio más alto entre las filtradas (desempate por menor peso)
+    - mas_moderno_comp: computadora más moderna entre las filtradas (desempate por precio más alto)
     """
 
     start_time = get_time()
@@ -438,8 +478,22 @@ def req_3(catalog, cpu_brand, cpu_tier):
 def req_4(catalog,cpu_brand, gpu_model):
     """
     Retorna el resultado del requerimiento 4
+    Requerimiento 4: Filtrar por marca de CPU y modelo de GPU, y obtener estadísticas.
+    Parámetros:
+    - cpu_brand: str (comparación case-insensitive)
+    - gpu_model: str (comparación case-insensitive)
+    Retorna:
+    (exec_time_ms, total_matches, avg_price, avg_vram, avg_ram, avg_boost, top1, top2, filtered_list)
+    - total_matches: int
+    - avg_price: float
+    - avg_vram: float o None si no hay datos
+    - avg_ram: float o None si no hay datos
+    - avg_boost: float o None si no hay datos
+    - top1: computadora con mayor precio (desempate por menor peso)
+    - top2: computadora con segundo mayor precio (desempate por menor peso)
+    - filtered_list: lista de computadoras que cumplen el filtro (puede ser vacía)
     """
-    # TODO: Modificar el requerimiento 4
+
     start_time= get_time()
     computers= catalog["computers"]
     n=al.size(computers)
@@ -520,6 +574,22 @@ def req_4(catalog,cpu_brand, gpu_model):
 def req_5(catalog, filtro, resolucion, year_min, year_max):
     """
     Retorna el resultado del requerimiento 5
+    Requerimiento 5: Filtrar por resolución y rango de años, y obtener estadísticas.
+    Parámetros:
+    - filtro: str ("BARATO" o "CARO") para determinar el criterio de selección del mejor computador
+    - resolucion: str (comparación exacta)
+    - year_min: int (año mínimo inclusive)
+    - year_max: int (año máximo inclusive)
+    Retorna:
+    (filtro, count, avg_price, avg_display, avg_gpu_tier, mejor, exec_time_ms)
+    - count: int (cantidad de computadoras que cumplen el filtro)
+    - avg_price: float (precio promedio de las computadoras filtradas)
+    - avg_display: float (tamaño de pantalla promedio de las computadoras filtradas)
+    - avg_gpu_tier: float (tier de GPU promedio de las computadoras filtradas)
+    - mejor: computadora que cumple el filtro y es la "mejor" según el criterio dado por `filtro`:
+        - Si `filtro` es "BARATO": la computadora con el precio más bajo (desempate por menor peso)
+        - Si `filtro` es "CARO": la computadora con el precio más alto (desempate por menor peso)
+    - exec_time_ms: float (tiempo de ejecución en milisegundos)
     """
     # TODO: Modificar el requerimiento 5
     start_time = get_time()
